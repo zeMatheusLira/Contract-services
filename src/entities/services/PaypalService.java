@@ -1,14 +1,16 @@
 package entities.services;
 
+import entities.Contract;
+
 public class PaypalService implements OnlinePaymentService {
 
     @Override
     public double paymentFee(Double amount) {
-        return 0;
+        return amount*0.02;
     }
 
     @Override
     public double interest(Double amount, Integer months) {
-        return 0;
+        return amount*0.01*months ;
     }
 }

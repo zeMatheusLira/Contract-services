@@ -1,11 +1,13 @@
 package application;
 
 import entities.Contract;
+import entities.Installment;
+import entities.services.ContractService;
+import entities.services.PaypalService;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -15,25 +17,29 @@ public class Program {
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         System.out.println("Entre com os dados do contrato:");
         System.out.print("Número:");
         int number = sc.nextInt();
         System.out.print("Data (dd/MM/yyyy):");
-        Date date = sdf.parse(sc.next());
+        LocalDate date = LocalDate.parse(sc.next(), fmt);
         System.out.print("Valor do contrato:");
-        double valueTotal = sc.nextDouble();
-        System.out.print("Entre com o número de parcelas:");
-        int installments = sc.nextInt();
+        double totalValue = sc.nextDouble();
+        Contract contracts = new Contract(number, date, totalValue);
 
-        Contract contracts = new Contract(number, date, valueTotal, new Contract( ));
-        // sei que tem um erro, vou dormir e amanhã tento resolver -> multiplicação do installment * parcelas(talvez isso seja um caminho)
-        // provavelmente installments nao recebe como atributo contracts
-        // processContract que deve fazer a multiplicacao para as parcelas -> arrumar um jeito de somar o mes
-        // for seria uma ideia interessante para o proncessContract?
+        System.out.print("Entre com o número de parcelas:");
+        int n = sc.nextInt();
+
+        ContractService contractService = new ContractService(new PaypalService());
+
+        contractService.processContract(contracts, n);
+
 
         System.out.println("Parcelas:");
+        for (Installment installment : contracts.getInstallments()) {
+            System.out.println(installment);
+        }
 
 
         sc.close();
